@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.2.1
 // @description  Zen mode for Overleaf (Toggle Sidebar, Header, Fullscreen)
-// @author       Chengde Qian
+// @author       You
 // @match        https://www.overleaf.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_addStyle
@@ -15,6 +15,32 @@
     // --- Configuration ---
     const BUTTON_CLASS = 'ol-zen-button';
     // Note: Overleaf classes change often. If buttons don't appear, check the TOOLBAR_SELECTOR.
+
+    // SVG Icons
+    // Common attributes for consistent style
+    const SVG_ATTRS = 'width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
+
+    const ICON_SIDEBAR = `
+        <svg ${SVG_ATTRS}>
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>`;
+
+    const ICON_LINENUMS = `
+        <svg ${SVG_ATTRS}>
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>`;
+
+    const ICON_HEADER = `
+        <svg ${SVG_ATTRS}>
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+        </svg>`;
+
+    const ICON_FULLSCREEN = `
+        <svg ${SVG_ATTRS}>
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>`;
 
     // --- CSS Styles ---
     const customCSS = `
@@ -87,14 +113,14 @@
         }
     }
 
-    function createButton(text, title, onClick) {
+    function createButton(content, title, onClick) {
         const btn = document.createElement('button');
-        btn.textContent = text;
+        btn.innerHTML = content; // Changed from textContent to innerHTML to support Icons
         btn.title = title;
         btn.className = BUTTON_CLASS;
         btn.onclick = (e) => {
             e.preventDefault();
-            onClick(btn); // Pass button instance in case we want to change text later
+            onClick(btn);
         };
         return btn;
     }
@@ -120,28 +146,26 @@
 
         const buttons = [
             // S: Sidebar
-            createButton("S", "Toggle Sidebar", () => {
+            createButton(ICON_SIDEBAR, "Toggle Sidebar", () => {
                 toggleDisplay("#ide-root > div.ide-redesign-main > div.ide-redesign-body > div > nav");
                 toggleDisplay("#review-panel-inner");
             }),
 
             // L: Line Numbers
-            createButton("L", "Toggle Line Numbers", () => {
+            createButton(ICON_LINENUMS, "Toggle Line Numbers", () => {
                 toggleDisplay(".cm-gutters");
                 const panel = document.querySelector("#panel-outer-main > div > div:nth-child(2) > div");
                 if (panel) panel.style.display = "none";
             }),
 
             // H: Header
-            createButton("H", "Toggle Header", () => {
+            createButton(ICON_HEADER, "Toggle Header", () => {
                 toggleDisplay(".ide-redesign-toolbar");
             }),
 
-            // F: Fullscreen Toggle (Merged)
-            createButton("F", "Toggle Fullscreen", (btn) => {
+            // F: Fullscreen (Icon)
+            createButton(ICON_FULLSCREEN, "Toggle Fullscreen", () => {
                 toggleFullScreen();
-                // Optional: visual feedback could be added here,
-                // but standard fullscreen UI usually suffices.
             })
         ];
 
