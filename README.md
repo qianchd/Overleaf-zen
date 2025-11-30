@@ -18,4 +18,5 @@ Zenmode for online tex editors, including overleaf and texpage.
 
 
 Compare with the original theme:)
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/48825214/233640047-89fd90bd-d493-4f2f-b655-66fbf1b59877.png">
+<img width="1237" height="818" alt="image" src="https://github.com/user-attachments/assets/df7e28a1-f779-4ba3-9d9f-660861a2366e" />
+
