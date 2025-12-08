@@ -1,5 +1,15 @@
-# Zenmode-OnlineTeX (ZenOverleaf)
-Zenmode for online tex editors, including overleaf and texpage.
+<div align="center">
+
+## ✍️ ZenOverleaf: Zenmode for Overleaf and Texpage.
+
+</div>
+
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="icon.png">
+  <img src="icon.png" alt="ZenOverleaf Logo" width="300">
+</picture>
+</div>
 
 ## Installation
 
