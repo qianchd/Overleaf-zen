@@ -16,7 +16,7 @@
     const SELECTORS = {
         TOOLBAR: '.editor-actions',
         HEADER: '.project-header',
-        LINENUMS: '.cm-gutters',       // 包含行号的主容器
+        LINENUMS: '.cm-gutters',// 包含行号的主容器
         SIDEBAR_TARGET: '.cm-gutter-lint' // Lint 侧边条
     };
 
@@ -109,6 +109,8 @@
 
         if (!isFullscreen()) {
             const request = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const el = document.querySelector('.pdfViewer');
+            el.style.setProperty("background-color", 'transparent', 'important');
             if (request) request.call(docEl).then(() => triggerResizePulse());
         } else {
             const cancel = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
