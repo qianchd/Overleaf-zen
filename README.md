@@ -1,15 +1,22 @@
-# Zenmode-OnlineTeX
+# Zenmode-OnlineTeX (ZenOverleaf)
 Zenmode for online tex editors, including overleaf and texpage.
 
 ## Installation
+
+### tampermonkey
 - Install the [tampermonkey](https://tampermonkey.net) extension in the Chromium-based or Firefox browser. The [kiwi browser](https://kiwibrowser.com/) is recommended for iPad and Android tablets.
 - Copy the js script to the tampermonkey extension.
+
+### Chromium Extension
+
+- Download the `.crx` file in the release page
+- drag the file into your browser.
 
 ## Features
 - Thin scrollbar
 
 - Full-screen button "F";
-  
+
 - Line-number toggling button "L";
 
 - Header hiding
