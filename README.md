@@ -33,7 +33,7 @@ Whether you are drafting a thesis, a research paper, or a resume, ZenOverleaf he
 
 #### Chromium Extension
 
-- Download the [ZenOverleaf-1.2.1.crx](https://github.com/qianchd/Overleaf-zen/releases/download/1.2.2/ZenOverleaf-1.2.2.crx) file in the release page.
+- Download the [ZenOverleaf-1.2.2.crx](https://github.com/qianchd/Overleaf-zen/releases/download/1.2.2/ZenOverleaf-1.2.2.crx) file in the release page.
 - Drag the file into your browser.
 - It takes 5$ to become a developer for chrome extension. So the chrome-store version is temporarily unavailable.
 
