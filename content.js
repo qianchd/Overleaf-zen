@@ -2,7 +2,9 @@
     'use strict';
 
     // --- Shared Constants ---
-    const SVG_ATTRS = 'width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
+    // FIX 1: Added xmlns namespace so DOMParser recognizes this as an SVG graphic
+    const SVG_ATTRS = 'xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
+
     const ICONS = {
         SIDEBAR: `<svg ${SVG_ATTRS}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>`,
         LINENUMS: `<svg ${SVG_ATTRS}><path d="M3 6h18M3 12h18M3 18h18"/></svg>`,
@@ -24,6 +26,19 @@
         }
     }
 
+    // FIX 2: Parse and Import Node safely
+    function parseSvg(svgString) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgString, 'image/svg+xml');
+        // Check for parsing errors
+        if (doc.querySelector('parsererror')) {
+            console.error('SVG Parse Error', doc.querySelector('parsererror'));
+            return document.createElement('span'); // Fallback
+        }
+        // Import the node into the current document to ensure it renders correctly
+        return document.importNode(doc.documentElement, true);
+    }
+
     // ==========================================
     // LOGIC 1: OVERLEAF
     // ==========================================
@@ -36,14 +51,13 @@
             viewers.forEach(el => {
                 el.style.setProperty('overflow-y', 'scroll', 'important');
                 el.style.setProperty('height', '100vh', 'important');
-                el.style.setProperty('display', 'unset', 'important'); // Critical fix for the flexbox lock
+                el.style.setProperty('display', 'unset', 'important');
             });
         }
 
         function triggerResizePulse() {
             let count = 0;
             const interval = setInterval(() => {
-                // if (isFullscreen()) fixPdfScroll();
                 window.dispatchEvent(new Event('resize', { bubbles: true, cancelable: true }));
                 count++;
                 if (count > 6) clearInterval(interval);
@@ -79,7 +93,8 @@
 
         function createButton(content, title, id, onClick) {
             const btn = document.createElement('button');
-            btn.innerHTML = content;
+            btn.appendChild(parseSvg(content));
+
             btn.title = title;
             btn.id = id;
             btn.className = BUTTON_CLASS;
@@ -89,18 +104,13 @@
 
         // --- Core Mount Logic ---
         function mountButtons() {
-            // 1. Locate Toolbar
             const toolbar = document.querySelector('.toolbar-editor') || document.querySelector('.toolbar-header');
             if (!toolbar) return;
 
-            // 2. Efficiency Check: Do our buttons already exist?
-            // If they do, we stop immediately to avoid duplication.
             if (toolbar.querySelector(`.${BUTTON_CLASS}`)) return;
 
-            // 3. Inject Buttons
             const insert_loc = document.querySelector("#ol-cm-toolbar-wrapper > div.ol-cm-toolbar.toolbar-editor > div.ol-cm-toolbar-button-group.ol-cm-toolbar-end");
 
-            // Clean up unwanted elements
             const premiumBadges = document.querySelectorAll("#ol-cm-toolbar-wrapper > div.ol-cm-toolbar.toolbar-editor > div:nth-child(n+3):nth-child(-n+7)");
             premiumBadges.forEach(el => {
                 el.style.setProperty('display', 'none', 'important');
@@ -126,8 +136,6 @@
             buttons.forEach(btn => toolbar.insertBefore(btn, insert_loc));
         }
 
-        // --- 3. Debounce Utility (核心：防抖函数) ---
-        // 只有当 DOM 停止变化 delay 毫秒后，fn 才会执行
         function debounce(fn, delay) {
             let timer;
             if(delay < 500) delay = 2000;
@@ -138,19 +146,16 @@
         }
         const debouncedMount = debounce(mountButtons, 3000);
 
-
-        // --- Observer: Watch for UI Updates ---
         const observer = new MutationObserver((mutations) => {
             debouncedMount();
         });
-        // const observer = new MutationObserver((mutations) => {
-        //     waitForElement('#ide-redesign-panel-source-editor > div > div', mountButtons)
-        // });
-        const targetNode = document.querySelector("#ide-redesign-file-tree > div > div.file-tree-inner");
-        // Start watching the body for changes
-        observer.observe(targetNode, { childList: true, subtree: true });
 
-        mountButtons()
+        const targetNode = document.querySelector("#ide-redesign-file-tree > div > div.file-tree-inner");
+        if (targetNode) {
+            observer.observe(targetNode, { childList: true, subtree: true });
+        }
+
+        mountButtons();
         debouncedMount();
     }
 
@@ -173,7 +178,6 @@
             ::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, .3); }
             ::-webkit-scrollbar-track:hover {  background-color: rgba(0, 0, 0, .07); }
             ::-webkit-scrollbar-thumb:active { background-color: rgba(0, 0, 0, .5); }
-
             :fullscreen { background-color: #fff; overflow-y: auto; }
         `;
 
@@ -185,7 +189,6 @@
             head.appendChild(style);
         }
 
-        // Apply the styles immediately
         injectStyles(customCSS);
 
         function triggerResizePulse() {
@@ -217,7 +220,7 @@
             if (!isFullscreen()) {
                 const request = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
                 const el = document.querySelector('.pdfViewer');
-                el.style.setProperty("background-color", 'transparent', 'important');
+                if (el) el.style.setProperty("background-color", 'transparent', 'important');
                 if (request) request.call(docEl).then(() => triggerResizePulse());
             } else {
                 const cancel = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
@@ -227,7 +230,8 @@
 
         function createButton(iconHtml, title, onClick) {
             const btn = document.createElement('button');
-            btn.innerHTML = iconHtml;
+            btn.appendChild(parseSvg(iconHtml));
+
             btn.title = title;
             btn.className = BUTTON_CLASS;
             btn.onclick = (e) => {

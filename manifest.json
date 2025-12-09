@@ -1,12 +1,21 @@
 {
   "manifest_version": 3,
   "name": "ZenOverleaf",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Zen mode for Overleaf and TexPage (Toggle Sidebar, Header, Fullscreen)",
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "zenoverleaf@github.com",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
   },
   "content_scripts": [
     {
