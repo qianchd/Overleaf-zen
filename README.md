@@ -52,5 +52,5 @@ Whether you are drafting a thesis, a research paper, or a resume, ZenOverleaf he
 Compare with the original theme:)
 <img width="1237" height="818" alt="image" src="https://github.com/user-attachments/assets/df7e28a1-f779-4ba3-9d9f-660861a2366e" />
 
-![](https://komarev.com/ghpvc/?username=zenoverleaf&color=yellow)
+![](https://komarev.com/ghpvc/?username=zenoverleaf&color=yellow&label=VIEWS)
 
