@@ -112,9 +112,11 @@
             const insert_loc = document.querySelector("#ol-cm-toolbar-wrapper > div.ol-cm-toolbar.toolbar-editor > div.ol-cm-toolbar-button-group.ol-cm-toolbar-end");
 
             const premiumBadges = document.querySelectorAll("#ol-cm-toolbar-wrapper > div.ol-cm-toolbar.toolbar-editor > div:nth-child(n+3):nth-child(-n+7)");
-            premiumBadges.forEach(el => {
-                el.style.setProperty('display', 'none', 'important');
-            });
+            if(premiumBadges.length > 2) {
+                premiumBadges.forEach(el => {
+                    el.style.setProperty('display', 'none', 'important');
+                });
+            }
 
             const buttons = [
                 createButton(ICONS.SIDEBAR, "Toggle Sidebar", "btnSbar", () => {
@@ -134,17 +136,62 @@
             ];
 
             buttons.forEach(btn => toolbar.insertBefore(btn, insert_loc));
+            toggleDisplay(".cm-gutters", 'none');
+            toggleDisplay(".cm-gutter-lint", 'none');
+            toggleDisplay("#ide-root > div.ide-redesign-main > div.ide-redesign-body > div > nav", 'none');
+            toggleDisplay("#review-panel-inner", 'none');
+        }
+
+
+        function waitForLoadingGone() {
+            return new Promise(resolve => {
+                // check if loading panel is gone.
+                if (!document.querySelector('.loading-panel')) return resolve();
+                let counter = 0;
+                let counter_large = 0;
+                let counter_leak = 0;
+                const timer = setInterval(() => {
+                    const button_bold = document.querySelector("div.ol-cm-toolbar-button-group:nth-child(4)");
+                    const loader = document.querySelector('.loading-panel');
+                    const premiumBadges = document.querySelectorAll("#ol-cm-toolbar-wrapper > div.ol-cm-toolbar.toolbar-editor > div:nth-child(n+3):nth-child(-n+7)");
+                    if(premiumBadges.length > 0) {
+                        counter += 1;
+                    }
+                    if(premiumBadges.length > 2) {
+                        counter_large += 1;
+                    }
+                    counter_leak += 1;
+                    if ((!loader && button_bold !== null && button_bold.style.display === "" && (counter > 1 || premiumBadges.length > 2)) || counter_large > 8 || counter > 8) {
+                        clearInterval(timer);
+                        resolve();
+                    } else if (premiumBadges.length > 2) {
+                        counter = 0;
+                    }
+                    if(counter_leak > 88) {
+                        console.log("warning: 88 leak");
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
         }
 
         function debounce(fn, delay) {
             let timer;
-            if(delay < 500) delay = 2000;
             return function(...args) {
                 clearTimeout(timer);
-                timer = setTimeout(()=>{fn.apply(this, args)}, delay);
+
+                timer = setTimeout(()=>{
+
+                    (async function() {
+                        // wait until loading complete
+                        await waitForLoadingGone();
+                        fn.apply(this, args)
+                    })();
+                }, delay);
             };
         }
-        const debouncedMount = debounce(mountButtons, 3000);
+        const debouncedMount = debounce(mountButtons, 500);
 
         const observer = new MutationObserver((mutations) => {
             debouncedMount();
