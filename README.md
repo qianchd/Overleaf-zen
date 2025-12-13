@@ -46,11 +46,12 @@ Whether you are drafting a thesis, a research paper, or a resume, ZenOverleaf he
 ### Have a look:
 
 
-<img width="1259" height="839" alt="image" src="https://github.com/user-attachments/assets/3f1b0f3f-0c71-4344-a3ef-da58bb94d41b" />
+<img width="1259" height="839" alt="image" src="https://github.com/user-attachments/assets/3f1b0f3f-0c71-4344-a3ef-da58bb94d41b"/>
 
 
 Compare with the original theme:)
-<img width="1237" height="818" alt="image" src="https://github.com/user-attachments/assets/df7e28a1-f779-4ba3-9d9f-660861a2366e" />
+
+<img width="1237" height="818" alt="image" src="https://github.com/user-attachments/assets/df7e28a1-f779-4ba3-9d9f-660861a2366e"/>
 
 ![](https://komarev.com/ghpvc/?username=zenoverleaf&color=yellow&label=VIEWS)
 
